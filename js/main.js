@@ -14,22 +14,6 @@ const rayCaster =  new Raycaster();
 class Main {
   init(){
     this.manager = new Manager();
-        
-    this.manager.scene = new Scene();
-    
-    this.manager.camera = new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    this.manager.camera.position.set(74,100,0) ;
-
-    this.manager.renderer = new WebGLRenderer({
-      antialias: true,
-    });
-    this.manager.renderer.setSize( window.innerWidth, window.innerHeight );
-    this.manager.renderer.shadowMap.enabled = true;
-    this.manager.renderer.shadowMap.type = PCFSoftShadowMap
-    this.manager.renderer.physicallyCorrectLights = true;
-    this.manager.renderer.toneMapping = ACESFilmicToneMapping;
-    this.manager.renderer.outputEncoding = sRGBEncoding;
-    document.body.appendChild( this.manager.renderer.domElement );
 
     /*
      * setup light
@@ -56,29 +40,26 @@ class Main {
      * setup controls
      */
     const controls = new OrbitControls(this.manager.camera, this.manager.renderer.domElement);
-
-    this.objects = [];
-
-    /*
+/*
     * setup bot
     */
     this.manager.bot = new Bot();
     this.manager.scene.add( this.manager.bot.mesh );
-    this.objects.push(this.manager.bot);
+    this.manager.objects.push(this.manager.bot);
 
     /*
      * setup ground
      */
-    this.ground = new Ground();
-    this.manager.scene.add( this.ground.mesh );
-    this.objects.push(this.ground);
+    this.manager.ground = new Ground();
+    this.manager.scene.add( this.manager.ground.mesh );
+    this.manager.objects.push(this.manager.ground);
 
     /*
      * Load tiger
      */
-
     this.manager.mixer = {};
     this.manager.tiger = new Tiger(this.manager.scene);
+    this.manager.objects.push(this.manager.tiger);
   }
 
   onClick(event) {
@@ -90,10 +71,15 @@ class Main {
     this.manager.tiger.run(!this.manager.tiger.isRunning);
 
     rayCaster.setFromCamera( mouse, this.manager.camera );
-    const intersects = rayCaster.intersectObjects(this.objects.map(m => m.mesh));
+    const intersects = rayCaster.intersectObjects(this.manager.objects.map(m => m.mesh));
 
     if ( intersects.length > 0 ) {
-      if (intersects[0].object.uuid == this.ground.mesh.uuid){
+      this.processIntersectedObjects(intersects);
+    }
+  }
+
+  processIntersectedObjects(intersects){
+      if (intersects[0].object.uuid == this.manager.ground.mesh.uuid){
         if (this.manager.bot.isSelected){
           console.log("Ground selected");
           this.manager.bot.deselect();
@@ -105,11 +91,17 @@ class Main {
         }else {
           console.log('No bots previously selected. Ground selected.');
         }
-      }else if(intersects[0].object.uuid == this.manager.bot.mesh.uuid){
+      }
+
+      if(intersects[0].object.uuid == this.manager.tiger.mesh.uuid){
+        console.log('tiger selected');
+      }
+
+      if(intersects[0].object.uuid == this.manager.bot.mesh.uuid){
         console.log("Bot selected");
         this.manager.bot.select();
       }
-    }
+
   }
 
   onWindowSizeChange() {

@@ -75,8 +75,6 @@ class Bot {
         this.path = new Path(xp, yp, zp);
     }
 
-
-
 }
 
 class Ground {
@@ -141,6 +139,7 @@ class Tiger{
             });
 
             this.fbx = fbx;
+            this.mesh = fbx.children[0].children[0];
             scene.add(fbx);
         });
     }
