@@ -108,6 +108,7 @@ class LineConnector{
     constructor(pt1, pt2) {
         const geometry = new Geometry();
         geometry.vertices.push(pt1);
+        pt2.y = 3; // matching the objects height
         geometry.vertices.push(pt2);
         const material = new LineBasicMaterial( { color: 0x4A7023 } );
 

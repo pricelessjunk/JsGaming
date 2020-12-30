@@ -6,32 +6,35 @@ import {
 import {WEBGL} from "./three.js/examples/jsm/WebGL.js";
 import {Bot, Ground, Tiger} from "./entities.js";
 import {OrbitControls} from "./three.js/examples/jsm/controls/OrbitControls.js";
-
+import {Manager} from "./manager.js";
 
 const clock = new Clock();
+const rayCaster =  new Raycaster();
 
 class Main {
   init(){
-    this.scene = new Scene();
-    this.rayCaster =  new Raycaster();
-    this.camera = new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    this.camera.position.set(74,100,0) ;
+    this.manager = new Manager();
+        
+    this.manager.scene = new Scene();
+    
+    this.manager.camera = new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    this.manager.camera.position.set(74,100,0) ;
 
-    this.renderer = new WebGLRenderer({
+    this.manager.renderer = new WebGLRenderer({
       antialias: true,
     });
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = PCFSoftShadowMap
-    this.renderer.physicallyCorrectLights = true;
-    this.renderer.toneMapping = ACESFilmicToneMapping;
-    this.renderer.outputEncoding = sRGBEncoding;
-    document.body.appendChild( this.renderer.domElement );
+    this.manager.renderer.setSize( window.innerWidth, window.innerHeight );
+    this.manager.renderer.shadowMap.enabled = true;
+    this.manager.renderer.shadowMap.type = PCFSoftShadowMap
+    this.manager.renderer.physicallyCorrectLights = true;
+    this.manager.renderer.toneMapping = ACESFilmicToneMapping;
+    this.manager.renderer.outputEncoding = sRGBEncoding;
+    document.body.appendChild( this.manager.renderer.domElement );
 
     /*
      * setup light
      */
-    let light = new DirectionalLight(0xffffff, 1.0);
+    let light = new DirectionalLight(0xffffff, 2.0);
     light.position.set(20,100,10);
     light.target.position.set(0,0,0);
     light.castShadow = true;
@@ -44,94 +47,94 @@ class Main {
     light.shadow.camera.right = -200;
     light.shadow.camera.top = 200;
     light.shadow.camera.bottom = -200;
-    this.scene.add(light);
+    this.manager.scene.add(light);
 
     light = new AmbientLight(0x101010);
-    this.scene.add(light);
+    this.manager.scene.add(light);
 
     /*
      * setup controls
      */
-    const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    const controls = new OrbitControls(this.manager.camera, this.manager.renderer.domElement);
 
     this.objects = [];
 
     /*
     * setup bot
     */
-    this.bot = new Bot();
-    this.scene.add( this.bot.mesh );
-    this.objects.push(this.bot);
+    this.manager.bot = new Bot();
+    this.manager.scene.add( this.manager.bot.mesh );
+    this.objects.push(this.manager.bot);
 
     /*
      * setup ground
      */
     this.ground = new Ground();
-    this.scene.add( this.ground.mesh );
+    this.manager.scene.add( this.ground.mesh );
     this.objects.push(this.ground);
 
     /*
      * Load tiger
      */
 
-    this.mixer = {};
-    this.tiger = new Tiger(this.scene);
+    this.manager.mixer = {};
+    this.manager.tiger = new Tiger(this.manager.scene);
   }
 
   onClick(event) {
     event.preventDefault();
     let mouse={};
-    mouse.x = (event.clientX / this.renderer.domElement.width) * 2  - 1;
-    mouse.y = - (event.clientY / this.renderer.domElement.height) * 2  + 1;
+    mouse.x = (event.clientX / this.manager.renderer.domElement.width) * 2  - 1;
+    mouse.y = - (event.clientY / this.manager.renderer.domElement.height) * 2  + 1;
 
-    this.tiger.run(!this.tiger.isRunning);
+    this.manager.tiger.run(!this.manager.tiger.isRunning);
 
-    this.rayCaster.setFromCamera( mouse, this.camera );
-    const intersects = this.rayCaster.intersectObjects(this.objects.map(m => m.mesh));
+    rayCaster.setFromCamera( mouse, this.manager.camera );
+    const intersects = rayCaster.intersectObjects(this.objects.map(m => m.mesh));
 
     if ( intersects.length > 0 ) {
       if (intersects[0].object.uuid == this.ground.mesh.uuid){
-        if (this.bot.isSelected){
+        if (this.manager.bot.isSelected){
           console.log("Ground selected");
-          this.bot.deselect();
+          this.manager.bot.deselect();
 
           const xp = intersects[0].point.x.toFixed(2);
           const yp = intersects[0].point.y.toFixed(2);
           const zp = intersects[0].point.z.toFixed(2);
-          this.bot.setPathToDestination(xp, yp, zp);
+          this.manager.bot.setPathToDestination(xp, yp, zp);
         }else {
           console.log('No bots previously selected. Ground selected.');
         }
-      }else if(intersects[0].object.uuid == this.bot.mesh.uuid){
+      }else if(intersects[0].object.uuid == this.manager.bot.mesh.uuid){
         console.log("Bot selected");
-        this.bot.select();
+        this.manager.bot.select();
       }
     }
   }
 
   onWindowSizeChange() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
+    this.manager.camera.aspect = window.innerWidth / window.innerHeight;
+    this.manager.camera.updateProjectionMatrix();
+    this.manager.renderer.setSize( window.innerWidth, window.innerHeight );
   }
 
   animate(){
     requestAnimationFrame(this.animate.bind(this));
 
     const delta = clock.getDelta();
-    this.renderer.render( this.scene, this.camera );
+    this.manager.renderer.render( this.manager.scene, this.manager.camera );
     this.fixUpModels(delta)
   }
 
   fixUpModels(delta){
-    this.bot.processStates(this.scene);
+    this.manager.bot.processStates(this.manager.scene);
 
-    if (this.tiger && this.tiger.mixer ){
-      if (this.tiger.mixer) {
-        this.tiger.mixer.update(delta);
+    if (this.manager.tiger && this.manager.tiger.mixer ){
+      if (this.manager.tiger.mixer) {
+        this.manager.tiger.mixer.update(delta);
       }
-      if (this.tiger && this.tiger.fbx){
-        this.tiger.fbx.scale.setScalar(0.1);
+      if (this.manager.tiger && this.manager.tiger.fbx){
+        this.manager.tiger.fbx.scale.setScalar(0.1);
       }
     }
   }
@@ -139,7 +142,7 @@ class Main {
 
 
 /*
- * Startyp Code
+ * Startype Code
  */
 const m = new Main();
 
