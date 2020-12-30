@@ -1,11 +1,14 @@
 import {
-  Scene, PerspectiveCamera, WebGLRenderer, CubeTextureLoader,
+  Scene, PerspectiveCamera, WebGLRenderer,
   DirectionalLight, AmbientLight, Raycaster,
-  PCFSoftShadowMap, ACESFilmicToneMapping, sRGBEncoding, Vector3
+  PCFSoftShadowMap, ACESFilmicToneMapping, sRGBEncoding, Vector3, AnimationMixer, Quaternion, Clock
 } from "./three.module.js";
 import {WEBGL} from "./three.js/examples/jsm/WebGL.js";
-import {Bot, Ground} from "./entities.js";
+import {Bot, Ground, Tiger} from "./entities.js";
 import {OrbitControls} from "./three.js/examples/jsm/controls/OrbitControls.js";
+
+
+const clock = new Clock();
 
 class Main {
   init(){
@@ -66,14 +69,22 @@ class Main {
     this.ground = new Ground();
     this.scene.add( this.ground.mesh );
     this.objects.push(this.ground);
+
+    /*
+     * Load tiger
+     */
+
+    this.mixer = {};
+    this.tiger = new Tiger(this.scene);
   }
 
   onClick(event) {
     event.preventDefault();
     let mouse={};
-
     mouse.x = (event.clientX / this.renderer.domElement.width) * 2  - 1;
     mouse.y = - (event.clientY / this.renderer.domElement.height) * 2  + 1;
+
+    this.tiger.run(!this.tiger.isRunning);
 
     this.rayCaster.setFromCamera( mouse, this.camera );
     const intersects = this.rayCaster.intersectObjects(this.objects.map(m => m.mesh));
@@ -106,11 +117,30 @@ class Main {
 
   animate(){
     requestAnimationFrame(this.animate.bind(this));
-    this.bot.processStates(this.scene);
+
+    const delta = clock.getDelta();
     this.renderer.render( this.scene, this.camera );
+    this.fixUpModels(delta)
+  }
+
+  fixUpModels(delta){
+    this.bot.processStates(this.scene);
+
+    if (this.tiger && this.tiger.mixer ){
+      if (this.tiger.mixer) {
+        this.tiger.mixer.update(delta);
+      }
+      if (this.tiger && this.tiger.fbx){
+        this.tiger.fbx.scale.setScalar(0.1);
+      }
+    }
   }
 }
 
+
+/*
+ * Startyp Code
+ */
 const m = new Main();
 
 // Events

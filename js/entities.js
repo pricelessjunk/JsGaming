@@ -4,9 +4,10 @@ import {
     Mesh,
     MeshStandardMaterial, MeshLambertMaterial,
     PlaneGeometry,
-    TextureLoader, Vector3, RepeatWrapping, sRGBEncoding
+    TextureLoader, Vector3, RepeatWrapping, sRGBEncoding, AnimationMixer
 } from "./three.module.js";
 import {Path} from "./path.js";
+import {FBXLoader} from "./three.js/examples/jsm/loaders/FBXLoader.js";
 
 
 const COLOR_DEFAULT = 0xffffff;
@@ -73,6 +74,9 @@ class Bot {
     setPathToDestination(xp, yp, zp) {
         this.path = new Path(xp, yp, zp);
     }
+
+
+
 }
 
 class Ground {
@@ -116,4 +120,38 @@ class LineConnector{
     }
 }
 
-export {Bot, Ground};
+class Tiger{
+    constructor(scene, mixer) {
+        const loader = new FBXLoader();
+
+        loader.load('model/tiger/tiger_run.fbx', (fbx) => {
+            fbx.scale.multiplyScalar(0.1);
+            this.mixer  = new AnimationMixer( fbx );
+
+            this.action = this.mixer.clipAction( fbx.animations[ 0 ] );
+            this.action.stop();
+            this.isRunning = false;
+
+            fbx.traverse( function ( child ) {
+                if ( child.isMesh ) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+
+            this.fbx = fbx;
+            scene.add(fbx);
+        });
+    }
+
+    run(run){
+        this.isRunning = run;
+        if (run){
+            this.action.play();
+        }else{
+            this.action.stop();
+        }
+    }
+}
+
+export {Bot, Ground, Tiger};
