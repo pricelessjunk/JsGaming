@@ -42,14 +42,31 @@ class Path{
         }
     }
 
+
     shiftAngleToRightQuardrant(angle, curPos, nextPos){
         const isXIncreasing = nextPos.position.x > curPos.x;
         const isZIncreasing = nextPos.position.z > curPos.z;
+        const isXSame = nextPos.position.x == curPos.x;
+        const isZSame = nextPos.position.z == curPos.z;
+        const isXDecreasing = !isXSame && !isXIncreasing;
+        const isZDecreasing = !isZSame && !isZIncreasing;
 
-        if (nextPos.position.z == curPos.z){
-            return isXIncreasing? angle + Math.PI : angle;
-        }else{
-            return nextPos.position.x == curPos.x? angle : (isZIncreasing ? angle + Math.PI/2 : angle - Math.PI/2);
+        if(isXIncreasing && isZIncreasing){
+            return angle;
+        } else if(isXIncreasing && isZDecreasing){
+            return angle - Math.PI;
+        } else if(isXIncreasing && isZSame){
+            return angle + Math.PI/2;
+        } else if(isXSame && isZIncreasing){
+            return angle - Math.PI/2;
+        } else if(isXSame && !isZIncreasing){
+            return angle - Math.PI/2;
+        } else if(isXDecreasing && isZIncreasing ){
+            return angle;
+        } else if(isXDecreasing && isZSame ){
+            return angle;
+        } else if(isXDecreasing && isZDecreasing ){
+            return angle;
         }
     }
 

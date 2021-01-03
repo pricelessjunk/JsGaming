@@ -68,8 +68,6 @@ class Main {
     mouse.x = (event.clientX / this.manager.renderer.domElement.width) * 2  - 1;
     mouse.y = - (event.clientY / this.manager.renderer.domElement.height) * 2  + 1;
 
-    this.manager.tiger.run(!this.manager.tiger.isRunning);
-
     rayCaster.setFromCamera( mouse, this.manager.camera );
     const intersects = rayCaster.intersectObjects(this.manager.objects.map(m => m.mesh));
 
@@ -80,21 +78,23 @@ class Main {
 
   processIntersectedObjects(intersects){
       if (intersects[0].object.uuid == this.manager.ground.mesh.uuid){
-        if (this.manager.bot.isSelected){
+        if (this.manager.tiger.isSelected){
           console.log("Ground selected");
           this.manager.bot.deselect();
+          this.manager.tiger.deselect();
 
           const xp = intersects[0].point.x.toFixed(2);
           const yp = intersects[0].point.y.toFixed(2);
           const zp = intersects[0].point.z.toFixed(2);
-          this.manager.bot.setPathToDestination(xp, yp, zp);
+          this.manager.tiger.setPathToDestination(xp, yp, zp);
         }else {
           console.log('No bots previously selected. Ground selected.');
         }
       }
 
       if(intersects[0].object.uuid == this.manager.tiger.mesh.uuid){
-        console.log('tiger selected');
+        console.log('Tiger selected');
+        this.manager.tiger.select();
       }
 
       if(intersects[0].object.uuid == this.manager.bot.mesh.uuid){
@@ -119,7 +119,7 @@ class Main {
   }
 
   fixUpModels(delta){
-    this.manager.bot.processStates(this.manager.scene);
+    // this.manager.bot.processStates(this.manager.scene);
 
     if (this.manager.tiger && this.manager.tiger.mixer ){
       if (this.manager.tiger.mixer) {
@@ -129,6 +129,8 @@ class Main {
         this.manager.tiger.fbx.scale.setScalar(0.1);
       }
     }
+    this.manager.tiger.processStates(this.manager.scene);
+
   }
 }
 

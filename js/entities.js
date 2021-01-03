@@ -4,7 +4,7 @@ import {
     Mesh,
     MeshStandardMaterial, MeshLambertMaterial,
     PlaneGeometry,
-    TextureLoader, Vector3, RepeatWrapping, sRGBEncoding, AnimationMixer
+    TextureLoader, Vector3, RepeatWrapping, sRGBEncoding, AnimationMixer, LoopOnce
 } from "./three.module.js";
 import {Path} from "./path.js";
 import {FBXLoader} from "./three.js/examples/jsm/loaders/FBXLoader.js";
@@ -122,13 +122,20 @@ class LineConnector{
 class Tiger{
     constructor(scene, mixer) {
         const loader = new FBXLoader();
+        this.isSelected = false;
+        this.destinationSet = false;
+        this.type = "bot";
+        this.state = "idle";
+        this.heading = 0;
+        this.destination = undefined;
 
         loader.load('model/tiger/tiger_run.fbx', (fbx) => {
             fbx.scale.multiplyScalar(0.1);
             this.mixer  = new AnimationMixer( fbx );
 
             this.action = this.mixer.clipAction( fbx.animations[ 0 ] );
-            this.action.stop();
+            this.action.play();
+            this.action.paused = true;
             this.isRunning = false;
 
             fbx.traverse( function ( child ) {
@@ -145,12 +152,63 @@ class Tiger{
     }
 
     run(run){
+        const oldPosition = new Vector3();
+        oldPosition.copy(this.fbx.position);
+
         this.isRunning = run;
         if (run){
-            this.action.play();
+            this.action.paused = false;
         }else{
-            this.action.stop();
+            this.action.reset();
+            this.action.paused = true;
         }
+
+        this.fbx.position.set(oldPosition.x, oldPosition.y, oldPosition.z);
+    }
+
+    select(){
+        this.isSelected = true;
+        // this.mesh.material.color.setHex(COLOR_SELECTED);
+    }
+
+    deselect(){
+        this.isSelected = false;
+        // this.mesh.material.color.setHex(COLOR_DEFAULT);
+    }
+
+    turnAndMoveToDestination(){
+        const newPosition = this.path.getNextPosition(this.fbx.position, this.heading);
+
+        this.fbx.position.x = newPosition.position.x;
+        this.fbx.position.z = newPosition.position.z;
+        this.fbx.rotateZ((newPosition.headingAngle - this.heading));
+        this.heading = newPosition.headingAngle;
+    }
+
+    processStates(scene){
+        if (this.state == "idle"){
+            if (this.path && (this.fbx.position.x != this.path.destination.x || this.fbx.position.z !=this.path.destination.z)){
+                this.state = "moving";
+                this.run(true);
+                this.turnAndMoveToDestination();
+                this.connector = new LineConnector(this.fbx.position, this.path.destination);
+                scene.add(this.connector.line);
+            }
+        }else if (this.state == "moving"){
+            if (this.fbx.position.x == this.path.destination.x && this.fbx.position.z == this.path.destination.z){
+                this.state = "idle";
+                this.run(false);
+                scene.remove(this.connector.line);
+                this.path = undefined;
+            }else if (this.path && this.fbx.position.x != this.path.destination.x || this.fbx.position.z !=this.path.destination.z){
+                this.turnAndMoveToDestination();
+                this.connector.updateSource(this.fbx.position);
+            }
+        }
+    }
+
+    setPathToDestination(xp, yp, zp) {
+        this.path = new Path(xp, yp, zp);
     }
 }
 
