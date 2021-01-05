@@ -47,8 +47,8 @@ class Bot {
 
         this.mesh.position.x = newPosition.position.x;
         this.mesh.position.z = newPosition.position.z;
-        this.mesh.rotateY((newPosition.headingAngle - this.heading));
-        this.heading = newPosition.headingAngle;
+        this.mesh.rotateY((newPosition.headingAngleDifference - this.heading));
+        this.heading = newPosition.headingAngleDifference;
     }
 
     processStates(scene){
@@ -181,8 +181,20 @@ class Tiger{
 
         this.fbx.position.x = newPosition.position.x;
         this.fbx.position.z = newPosition.position.z;
-        this.fbx.rotateZ((newPosition.headingAngle - this.heading));
-        this.heading = newPosition.headingAngle;
+        this.fbx.rotateZ(newPosition.isRotationCounterClockwise? newPosition.headingAngleDifference : -1 * newPosition.headingAngleDifference);
+        this.heading = newPosition.isRotationCounterClockwise ?
+            this.fullRotateAngles(this.heading + newPosition.headingAngleDifference) :
+            this.fullRotateAngles(this.heading - newPosition.headingAngleDifference) ;
+    }
+
+    fullRotateAngles(angle){
+        if (angle > 2 * Math.PI){
+            return angle - 2 * Math.PI
+        } else if (angle < 0){
+            return angle + 2 * Math.PI
+        } else {
+            return angle
+        }
     }
 
     processStates(scene){

@@ -18,7 +18,7 @@ class Main {
     /*
      * setup light
      */
-    let light = new DirectionalLight(0xffffff, 2.0);
+    let light = new DirectionalLight(0xffffff, 1.0);
     light.position.set(20,100,10);
     light.target.position.set(0,0,0);
     light.castShadow = true;
@@ -43,9 +43,9 @@ class Main {
 /*
     * setup bot
     */
-    this.manager.bot = new Bot();
+    /*this.manager.bot = new Bot();
     this.manager.scene.add( this.manager.bot.mesh );
-    this.manager.objects.push(this.manager.bot);
+    this.manager.objects.push(this.manager.bot);*/
 
     /*
      * setup ground
@@ -80,7 +80,7 @@ class Main {
       if (intersects[0].object.uuid == this.manager.ground.mesh.uuid){
         if (this.manager.tiger.isSelected){
           console.log("Ground selected");
-          this.manager.bot.deselect();
+          //this.manager.bot.deselect();
           this.manager.tiger.deselect();
 
           const xp = intersects[0].point.x.toFixed(2);
@@ -97,10 +97,10 @@ class Main {
         this.manager.tiger.select();
       }
 
-      if(intersects[0].object.uuid == this.manager.bot.mesh.uuid){
+      /*if(intersects[0].object.uuid == this.manager.bot.mesh.uuid){
         console.log("Bot selected");
         this.manager.bot.select();
-      }
+      }*/
 
   }
 
