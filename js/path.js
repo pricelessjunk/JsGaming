@@ -3,6 +3,7 @@ import {MathSolver} from "./mathsolver.js";
 
 const BOT_SPEED = 0.5;
 const MAXIMUM_ROTATION_ANGLE_RAD = MathSolver.degToRad(10);
+const PI = Math.PI;
 
 class Path{
     constructor(x,y,z) {
@@ -19,10 +20,11 @@ class Path{
         nextPositionInPath.position.y = curPos.y;
         nextPositionInPath.position.z = this.destination.z; // curPos.z + this.findNextPos(curPos.z, this.destination.z);
         nextPositionInPath.headingAngleDifference = 0;
+        let globalAngleToDestination = 0;
 
         if (nextPositionInPath.position.x != curPos.x || nextPositionInPath.position.z != curPos.z){
-            let globalAngleToDestination = this.getAngleToNextPos(nextPositionInPath, curPos);
-            globalAngleToDestination = this.shiftAngleToRightQuardrant(globalAngleToDestination, curPos, nextPositionInPath);
+            let angleToDestination = this.getAngleToNextPos(nextPositionInPath, curPos);
+            globalAngleToDestination = this.shiftAngleToRightQuardrant(angleToDestination, curPos, nextPositionInPath);
             let angleDifference = Math.abs(globalAngleToDestination - headingAngle);
             nextPositionInPath.isRotationCounterClockwise = angleDifference < Math.PI && globalAngleToDestination > headingAngle;
 
@@ -33,6 +35,8 @@ class Path{
 
             nextPositionInPath.headingAngleDifference = angleDifference;
         }
+
+        this.findNextPos(curPos, this.destination, globalAngleToDestination, nextPositionInPath);
         /*nextPositionInPath.position.y = curPos.y;
         nextPositionInPath.headingAngleDifference = headingAngle;
 
@@ -60,11 +64,11 @@ class Path{
             //}
         }*/
 
-        nextPositionInPath.position.copy(curPos);
+        // nextPositionInPath.position.copy(curPos);
         return nextPositionInPath;
     }
 
-    findNextPos(curPos, endPos){
+    /*findNextPos(curPos, endPos){
         if (curPos < endPos){
             // return BOT_SPEED > (endPos - curPos) ? (endPos - curPos) : BOT_SPEED;
         }else if(curPos > endPos){
@@ -72,11 +76,37 @@ class Path{
         }else {
             return 0;
         }
-    }
+    }*/
 
     getAngleToNextPos(nextPositionInPath, curPos){
         let angle =  Math.atan((nextPositionInPath.position.x - curPos.x )/(nextPositionInPath.position.z - curPos.z));
         return angle;
+    }
+
+    findNextPos(curPos, endPos, globalHeadingAngle, nextPositionInPath){
+        let angle = 0;
+        const distanceToDestination = MathSolver.distanceXZ(curPos, endPos);
+
+
+        if (globalHeadingAngle >= 3*PI/2 && globalHeadingAngle < 2 * PI){
+            angle = globalHeadingAngle - 2 * PI;
+        }else if (PI/2 >= globalHeadingAngle && globalHeadingAngle < 3*PI/2){
+            angle = globalHeadingAngle - 2 * PI;
+        }else {
+            angle = globalHeadingAngle;
+        }
+
+        if (distanceToDestination < BOT_SPEED){
+            nextPositionInPath.position.z = parseFloat(endPos.z);
+            nextPositionInPath.position.x = parseFloat(endPos.x);
+        }else {
+            let r = BOT_SPEED;
+            let z = r * Math.cos(angle) + parseFloat(curPos.z);
+            let x = Math.sqrt(r*r - (z - curPos.z)*(z - curPos.z)) + parseFloat(curPos.x);
+
+            nextPositionInPath.position.z = z;
+            nextPositionInPath.position.x = x;
+        }
     }
 
 
@@ -106,11 +136,6 @@ class Path{
             return angle;
         }*/
 
-        /*if(isXIncreasing && isZDecreasing){
-            return Math.PI/2 - angle;
-        }else if (isXDecreasing && isZDecreasing){
-            return Math.PI/2 + angle;
-        }*/
         if (isZDecreasing){
             return Math.PI + angle;
         }else if (isXDecreasing && isZIncreasing){
