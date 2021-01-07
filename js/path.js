@@ -1,8 +1,8 @@
 import {Vector3} from "./three.module.js";
 import {MathSolver} from "./mathsolver.js";
 
-const BOT_SPEED = 0.5;
-const MAXIMUM_ROTATION_ANGLE_RAD = MathSolver.degToRad(10);
+const BOT_SPEED = 1;
+const MAXIMUM_ROTATION_ANGLE_RAD = MathSolver.degToRad(1);
 const PI = Math.PI;
 
 class Path{
@@ -37,46 +37,8 @@ class Path{
         }
 
         this.findNextPos(curPos, this.destination, globalAngleToDestination, nextPositionInPath);
-        /*nextPositionInPath.position.y = curPos.y;
-        nextPositionInPath.headingAngleDifference = headingAngle;
-
-        nextPositionInPath.position.x = curPos.x + this.findNextPos(curPos.x, this.destination.x);
-        nextPositionInPath.position.z = curPos.z + this.findNextPos(curPos.z, this.destination.z);
-
-        if (nextPositionInPath.position.x != curPos.x || nextPositionInPath.position.z != curPos.z){
-            let originalAngle = this.getAngleToNextPos(nextPositionInPath, curPos);
-
-            if (Math.abs(originalAngle) == MathSolver.degToRad(10)){
-
-            }
-
-            originalAngle = this.shiftAngleToRightQuardrant(originalAngle, curPos, nextPositionInPath);
-
-            let angleDiff = originalAngle - headingAngle;
-
-            if (Math.abs(angleDiff) > MathSolver.degToRad(10) ){
-                angleDiff = originalAngle < 0? -1 * MathSolver.degToRad(10) : MathSolver.degToRad(10);
-            }
-
-            //if (angleDiff != 0){
-                //console.log('angle: ' + MathSolver.radToDeg(angleDiff) + ' ,heading: ' + MathSolver.radToDeg(headingAngle));
-                //nextPositionInPath.headingAngleDifference = angleDiff - headingAngle
-            //}
-        }*/
-
-        // nextPositionInPath.position.copy(curPos);
         return nextPositionInPath;
     }
-
-    /*findNextPos(curPos, endPos){
-        if (curPos < endPos){
-            // return BOT_SPEED > (endPos - curPos) ? (endPos - curPos) : BOT_SPEED;
-        }else if(curPos > endPos){
-            return BOT_SPEED > (curPos - endPos) ? (endPos - curPos) : -1 * BOT_SPEED;
-        }else {
-            return 0;
-        }
-    }*/
 
     getAngleToNextPos(nextPositionInPath, curPos){
         let angle =  Math.atan((nextPositionInPath.position.x - curPos.x )/(nextPositionInPath.position.z - curPos.z));
@@ -87,10 +49,15 @@ class Path{
         let angle = 0;
         const distanceToDestination = MathSolver.distanceXZ(curPos, endPos);
 
+        let takeNegativeRoot = false;
 
         if (globalHeadingAngle >= 3*PI/2 && globalHeadingAngle < 2 * PI){
             angle = globalHeadingAngle - 2 * PI;
-        }else if (PI/2 >= globalHeadingAngle && globalHeadingAngle < 3*PI/2){
+            takeNegativeRoot = true;
+        }else if (globalHeadingAngle >= PI && globalHeadingAngle < 3*PI/2){
+            angle = globalHeadingAngle - 2 * PI;
+            takeNegativeRoot = true;
+        }else if (globalHeadingAngle >= PI/2 && globalHeadingAngle < PI){
             angle = globalHeadingAngle - 2 * PI;
         }else {
             angle = globalHeadingAngle;
@@ -101,8 +68,20 @@ class Path{
             nextPositionInPath.position.x = parseFloat(endPos.x);
         }else {
             let r = BOT_SPEED;
+
+            /*
+             * value of x at a point on the circle
+             * y = r  * cos(Theta) + q
+             */
             let z = r * Math.cos(angle) + parseFloat(curPos.z);
-            let x = Math.sqrt(r*r - (z - curPos.z)*(z - curPos.z)) + parseFloat(curPos.x);
+
+            /*
+             * value of x at a point on the circle
+             * x = sqrt(r^2 - (y-2)^2) + p
+             */
+            let rootPortion = Math.sqrt(r*r - (z - curPos.z)*(z - curPos.z));
+            rootPortion *= takeNegativeRoot ? -1 : 1
+            let x =  rootPortion + parseFloat(curPos.x);
 
             nextPositionInPath.position.z = z;
             nextPositionInPath.position.x = x;
