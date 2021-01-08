@@ -4,7 +4,8 @@ import {
 	PerspectiveCamera,
 	Scene,
 	sRGBEncoding,
-	WebGLRenderer
+	WebGLRenderer,
+    AxesHelper
 } from "./three.module.js";
 
 class Manager{
@@ -30,6 +31,10 @@ class Manager{
 		 */
 		this.camera = new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 		this.camera.position.set(74,100,0) ;
+
+        const axesHelper = new AxesHelper( 25 );
+        axesHelper.position.set(0,3,0);
+        this.scene.add( axesHelper );
 
 
 		this.mixer = undefined;

@@ -36,7 +36,7 @@ class Path{
             nextPositionInPath.headingAngleDifference = angleDifference;
         }
 
-        this.findNextPos(curPos, this.destination, globalAngleToDestination, nextPositionInPath);
+        this.findNextPos(curPos, this.destination, headingAngle + nextPositionInPath.headingAngleDifference, nextPositionInPath);
         return nextPositionInPath;
     }
 
