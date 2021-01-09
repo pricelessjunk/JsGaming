@@ -1,11 +1,3 @@
-.body {
-    margin: 0;
-}
-.canvas{
-    width: 100%;
-    height: 100%;
-}
-
 .ui {
   /*width: 100%;
   height: 100%;*/
@@ -19,7 +11,7 @@
   background-image: url('./resources/images/health-bar.png');
   background-size: 200px 120px;
   width: 200px;
-  height: 100px;
+  height: 120px;
   z-index: 1;
 }
 

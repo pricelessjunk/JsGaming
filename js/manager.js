@@ -5,12 +5,17 @@ import {
 	Scene,
 	sRGBEncoding,
 	WebGLRenderer,
-    AxesHelper
+    AxesHelper,
+    Color,
+    Fog
 } from "./three.module.js";
 
 class Manager{
 	constructor() {
 		this.scene = new Scene();
+
+        this.scene.background = new Color( 0xcce0ff );
+        this.scene.fog = new Fog( 0xcce0ff, 500, 10000 );
 
 		/*
 		 * Renderer
