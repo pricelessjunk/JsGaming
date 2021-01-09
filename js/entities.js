@@ -86,7 +86,7 @@ class Ground {
         // const material = new MeshStandardMaterial( { color: 0x4A7023 } );
 
         const loader = new TextureLoader();
-        const groundTexture = loader.load( './textures/grasslight-big.jpg' );
+        const groundTexture = loader.load( './resources/textures/grasslight-big.jpg' );
         groundTexture.wrapS = groundTexture.wrapT = RepeatWrapping;
         groundTexture.repeat.set( 25, 25 );
         groundTexture.anisotropy = 16;
@@ -129,7 +129,7 @@ class Tiger{
         this.heading = 0;
         this.destination = undefined;
 
-        loader.load('model/tiger/tiger_run.fbx', (fbx) => {
+        loader.load('./resources/model/tiger/tiger_run.fbx', (fbx) => {
             fbx.scale.multiplyScalar(0.1);
             this.mixer  = new AnimationMixer( fbx );
 
