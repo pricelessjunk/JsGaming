@@ -2,7 +2,7 @@ import {Vector3} from "./three.module.js";
 import {MathSolver} from "./mathsolver.js";
 
 const BOT_SPEED = 1;
-const MAXIMUM_ROTATION_ANGLE_RAD = MathSolver.degToRad(1);
+const MAXIMUM_ROTATION_ANGLE_RAD = MathSolver.degToRad(5);
 const PI = Math.PI;
 
 class Path{
