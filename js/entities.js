@@ -149,6 +149,23 @@ class Tiger{
             this.mesh = fbx.children[0].children[0];
             scene.add(fbx);
         });
+
+        loader.load('./resources/model/tiger/greendiamond.fbx', (fbx) => {
+            fbx.scale.multiplyScalar(0.02);
+            fbx.traverse( function ( child ) {
+                if ( child.isMesh ) {
+                    child.castShadow = false;
+                    child.receiveShadow = false;
+                }
+            });
+
+            this.selector = {
+                fbx : fbx,
+                mesh : fbx.children[0].children[0]
+            };
+
+            // scene.add(fbx);
+        });
     }
 
     run(run){
@@ -163,17 +180,19 @@ class Tiger{
             this.action.paused = true;
         }
 
-        this.fbx.position.set(oldPosition.x, oldPosition.y, oldPosition.z);
+        // this.fbx.position.set(oldPosition.x, oldPosition.y, oldPosition.z);
     }
 
-    select(){
+    select(scene){
         this.isSelected = true;
         // this.mesh.material.color.setHex(COLOR_SELECTED);
+        scene.add(this.selector.fbx);
     }
 
-    deselect(){
+    deselect(scene){
         this.isSelected = false;
         // this.mesh.material.color.setHex(COLOR_DEFAULT);
+        scene.remove(this.selector.fbx);
     }
 
     turnAndMoveToDestination(){

@@ -1,5 +1,5 @@
 import {
-  Scene, PerspectiveCamera, WebGLRenderer,
+  PerspectiveCamera, WebGLRenderer,
   DirectionalLight, AmbientLight, Raycaster,
   PCFSoftShadowMap, ACESFilmicToneMapping, sRGBEncoding, Vector3, AnimationMixer, Quaternion, Clock
 } from "./three.module.js";
@@ -81,7 +81,7 @@ class Main {
         if (this.manager.tiger.isSelected){
           console.log("Ground selected");
           //this.manager.bot.deselect();
-          this.manager.tiger.deselect();
+          this.manager.tiger.deselect(this.manager.scene);
 
           const xp = intersects[0].point.x.toFixed(2);
           const yp = intersects[0].point.y.toFixed(2);
@@ -94,7 +94,7 @@ class Main {
 
       if(intersects[0].object.uuid == this.manager.tiger.mesh.uuid){
         console.log('Tiger selected');
-        this.manager.tiger.select();
+        this.manager.tiger.select(this.manager.scene);
       }
 
       /*if(intersects[0].object.uuid == this.manager.bot.mesh.uuid){
@@ -130,6 +130,13 @@ class Main {
       }
     }
     this.manager.tiger.processStates(this.manager.scene);
+
+    if (this.manager.tiger.fbx && this.manager.tiger.fbx.position){
+        this.manager.tiger.selector.fbx.position.x = this.manager.tiger.fbx.position.x;
+        this.manager.tiger.selector.fbx.position.y = 15;
+        this.manager.tiger.selector.fbx.position.z = this.manager.tiger.fbx.position.z;
+    }
+
 
   }
 }
