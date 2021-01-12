@@ -1,15 +1,15 @@
 import {
-  PerspectiveCamera, WebGLRenderer,
-  DirectionalLight, AmbientLight, Raycaster,
+  DirectionalLight, PerspectiveCamera, WebGLRenderer,
+  AmbientLight, Raycaster,
   PCFSoftShadowMap, ACESFilmicToneMapping, sRGBEncoding, Vector3, AnimationMixer, Quaternion, Clock
 } from "./three.module.js";
 import {WEBGL} from "./three.js/examples/jsm/WebGL.js";
-import {Bot, Ground, Tiger} from "./entities.js";
+import {Bot, Cow, Ground, Tiger} from "./entities.js";
 import {OrbitControls} from "./three.js/examples/jsm/controls/OrbitControls.js";
 import {Manager} from "./manager.js";
 
 const clock = new Clock();
-const rayCaster =  new Raycaster();
+const rayCaster =  new Raycaster(); 
 
 class Main {
   init(){
@@ -35,7 +35,6 @@ class Main {
 
     light = new AmbientLight(0x101010);
     this.manager.scene.add(light);
-
     /*
      * setup controls
      */
@@ -60,6 +59,11 @@ class Main {
     this.manager.mixer = {};
     this.manager.tiger = new Tiger(this.manager.scene);
     this.manager.objects.push(this.manager.tiger);
+
+    /*
+     * Load Cows
+     */
+    this.manager.cow = new Cow(this.manager.scene);
   }
 
   onClick(event) {

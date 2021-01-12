@@ -243,4 +243,45 @@ class Tiger{
     }
 }
 
-export {Bot, Ground, Tiger};
+class Cow{
+    constructor(scene) {
+        const loader = new FBXLoader();
+        this.isSelected = false;
+        this.type = "bot";
+        this.state = "idle";
+        this.heading = 0;
+
+        loader.load('./resources/model/cow/FarmCow.fbx', (fbxCow) => {
+            fbxCow.scale.multiplyScalar(0.1);
+            fbxCow.position.x = 10;
+            /*this.mixer  = new AnimationMixer( fbx );
+
+            this.action = this.mixer.clipAction( fbx.animations[ 0 ] );
+            this.action.play();
+            this.action.paused = true;
+            this.isRunning = false;*/
+
+            const animations = fbxCow.animations;
+            const mixer = new AnimationMixer( fbxCow );
+
+            const idleAction = mixer.clipAction( animations[ 0 ] );
+            const actions = [ idleAction ];
+            actions[0].play();
+
+            fbxCow.traverse( function ( child ) {
+                if ( child.isMesh ) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+
+            this.fbx = fbxCow;
+            this.mesh = fbxCow.children[0].children[0];
+            scene.add(fbxCow);
+        });
+    }
+    
+
+}
+
+export {Bot, Ground, Tiger, Cow};
