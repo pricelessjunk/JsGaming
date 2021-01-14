@@ -1,5 +1,5 @@
 import {
-  DirectionalLight, PerspectiveCamera, WebGLRenderer,
+  HemisphereLight, DirectionalLight, PerspectiveCamera, WebGLRenderer,
   AmbientLight, Raycaster,
   PCFSoftShadowMap, ACESFilmicToneMapping, sRGBEncoding, Vector3, AnimationMixer, Quaternion, Clock
 } from "./three.module.js";
@@ -18,7 +18,9 @@ class Main {
     /*
      * setup light
      */
-    let light = new DirectionalLight(0xffffff, 1.0);
+    //let light = new HemisphereLight(0xffeeb1, 0x080820, 2);
+    
+    let light = new DirectionalLight(0xffeeb1, 2);
     light.position.set(20,100,10);
     light.target.position.set(0,0,0);
     light.castShadow = true;
@@ -135,7 +137,7 @@ class Main {
     }
     this.manager.tiger.processStates(this.manager.scene);
 
-    if (this.manager.tiger.fbx && this.manager.tiger.fbx.position){
+    if (this.manager.tiger.selector && this.manager.tiger.fbx && this.manager.tiger.fbx.position){
         this.manager.tiger.selector.fbx.position.x = this.manager.tiger.fbx.position.x;
         this.manager.tiger.selector.fbx.position.y = 15;
         this.manager.tiger.selector.fbx.position.z = this.manager.tiger.fbx.position.z;

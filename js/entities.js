@@ -150,7 +150,7 @@ class Tiger{
             scene.add(fbx);
         });
 
-        loader.load('./resources/model/tiger/greendiamond.fbx', (fbx) => {
+        loader.load('./resources/model/tiger/selector/greendiamond.fbx', (fbx) => {
             fbx.scale.multiplyScalar(0.02);
             fbx.traverse( function ( child ) {
                 if ( child.isMesh ) {

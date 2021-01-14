@@ -7,7 +7,8 @@ import {
 	WebGLRenderer,
     AxesHelper,
     Color,
-    Fog
+    Fog,
+	ReinhardToneMapping
 } from "./three.module.js";
 
 class Manager{
@@ -27,7 +28,9 @@ class Manager{
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = PCFSoftShadowMap
 		this.renderer.physicallyCorrectLights = true;
-		this.renderer.toneMapping = ACESFilmicToneMapping;
+		// this.renderer.toneMapping = ACESFilmicToneMapping;
+		this.renderer.toneMapping = ReinhardToneMapping
+		this.renderer.toneMappingExposure = 2.3;
 		this.renderer.outputEncoding = sRGBEncoding;
 		document.body.appendChild( this.renderer.domElement );
 
