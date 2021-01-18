@@ -135,7 +135,12 @@ class Main {
         this.manager.tiger.fbx.scale.setScalar(0.1);
       }
     }
+
     this.manager.tiger.processStates(this.manager.scene);
+
+    if (this.manager.cow && this.manager.cow.mixer) {
+      this.manager.cow.mixer.update(delta);
+    }
 
     if (this.manager.tiger.selector && this.manager.tiger.fbx && this.manager.tiger.fbx.position){
         this.manager.tiger.selector.fbx.position.x = this.manager.tiger.fbx.position.x;

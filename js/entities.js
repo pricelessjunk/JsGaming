@@ -251,20 +251,20 @@ class Cow{
         this.state = "idle";
         this.heading = 0;
 
-        loader.load('./resources/model/cow/FarmCow.fbx', (fbxCow) => {
+        loader.load('./resources/model/cow/cow_run_117_128.fbx', (fbxCow) => {
             fbxCow.scale.multiplyScalar(0.1);
             fbxCow.position.x = 10;
-            /*this.mixer  = new AnimationMixer( fbx );
+            this.mixer  = new AnimationMixer( fbxCow );
 
-            this.action = this.mixer.clipAction( fbx.animations[ 0 ] );
+            this.action = this.mixer.clipAction( fbxCow.animations[ 0 ] );
             this.action.play();
             this.action.paused = true;
-            this.isRunning = false;*/
+            this.isRunning = false;
 
             const animations = fbxCow.animations;
-            const mixer = new AnimationMixer( fbxCow );
+            this.mixer = new AnimationMixer( fbxCow );
 
-            const idleAction = mixer.clipAction( animations[ 0 ] );
+            const idleAction = this.mixer.clipAction( animations[ 0 ] );
             const actions = [ idleAction ];
             actions[0].play();
 
