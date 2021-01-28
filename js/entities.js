@@ -8,6 +8,7 @@ import {
 } from "./three.module.js";
 import {Path} from "./path.js";
 import {FBXLoader} from "./three.js/examples/jsm/loaders/FBXLoader.js";
+import {ACTION_RUN, ACTION_WALK} from "./constants.js"
 
 
 const COLOR_DEFAULT = 0xffffff;
@@ -250,23 +251,20 @@ class Cow{
         this.type = "bot";
         this.state = "idle";
         this.heading = 0;
+        this.actions = {};
 
-        loader.load('./resources/model/cow/cow_run_117_128.fbx', (fbxCow) => {
+        loader.load('./resources/model/cow/cow.fbx', (fbxCow) => {
             fbxCow.scale.multiplyScalar(0.1);
             fbxCow.position.x = 10;
-            this.mixer  = new AnimationMixer( fbxCow );
-
-            this.action = this.mixer.clipAction( fbxCow.animations[ 0 ] );
-            this.action.play();
-            this.action.paused = true;
-            this.isRunning = false;
 
             const animations = fbxCow.animations;
             this.mixer = new AnimationMixer( fbxCow );
 
-            const idleAction = this.mixer.clipAction( animations[ 0 ] );
-            const actions = [ idleAction ];
-            actions[0].play();
+            const walkAction = this.mixer.clipAction( animations[ 0 ] );
+            const runAction = this.mixer.clipAction( animations[1] );
+            this.actions[ACTION_WALK] = walkAction;
+            this.actions[ACTION_RUN] = runAction;
+            this.actions[ACTION_RUN].play();
 
             fbxCow.traverse( function ( child ) {
                 if ( child.isMesh ) {
