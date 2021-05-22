@@ -8,7 +8,7 @@ import {
 } from "./three.module.js";
 import {Path} from "./path.js";
 import {FBXLoader} from "./three.js/examples/jsm/loaders/FBXLoader.js";
-import {ACTION_RUN, ACTION_WALK} from "./constants.js"
+import {ACTION_COW_RUN, ACTION_COW_WALK} from "./constants.js"
 
 
 const COLOR_DEFAULT = 0xffffff;
@@ -262,9 +262,9 @@ class Cow{
 
             const walkAction = this.mixer.clipAction( animations[ 0 ] );
             const runAction = this.mixer.clipAction( animations[1] );
-            this.actions[ACTION_WALK] = walkAction;
-            this.actions[ACTION_RUN] = runAction;
-            this.actions[ACTION_RUN].play();
+            this.actions[ACTION_COW_WALK] = walkAction;
+            this.actions[ACTION_COW_RUN] = runAction;
+            this.actions[ACTION_COW_RUN].play();
 
             fbxCow.traverse( function ( child ) {
                 if ( child.isMesh ) {

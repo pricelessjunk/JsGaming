@@ -1,2 +1,2 @@
-export const ACTION_WALK = 'walk';
-export const ACTION_RUN = 'run';
+export const ACTION_COW_WALK = 'walk';
+export const ACTION_COW_RUN = 'run';

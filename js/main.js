@@ -7,7 +7,7 @@ import {WEBGL} from "./three.js/examples/jsm/WebGL.js";
 import {Bot, Cow, Ground, Tiger} from "./entities.js";
 import {OrbitControls} from "./three.js/examples/jsm/controls/OrbitControls.js";
 import {Manager} from "./manager.js";
-import {ACTION_RUN, ACTION_WALK} from "./constants.js"
+import {ACTION_COW_RUN, ACTION_COW_WALK} from "./constants.js"
 
 const clock = new Clock();
 const rayCaster =  new Raycaster(); 
@@ -22,7 +22,7 @@ class Main {
      */
     //let light = new HemisphereLight(0xffeeb1, 0x080820, 2);
     
-    let light = new DirectionalLight(0xffeeb1, 2);
+    let light = new DirectionalLight(0xffeeb1, 1);
     light.position.set(20,100,10);
     light.target.position.set(0,0,0);
     light.castShadow = true;
@@ -43,7 +43,8 @@ class Main {
      * setup controls
      */
     const controls = new OrbitControls(this.manager.camera, this.manager.renderer.domElement);
-/*
+    
+    /*
     * setup bot
     */
     /*this.manager.bot = new Bot();
@@ -56,6 +57,14 @@ class Main {
     this.manager.ground = new Ground();
     this.manager.scene.add( this.manager.ground.mesh );
     this.manager.objects.push(this.manager.ground);
+
+    /*
+    * setup boundary
+    */
+    // this.manager.bot = new Bot();
+    // this.manager.scene.add( this.manager.bot.mesh );
+    // this.manager.objects.push(this.manager.bot);
+
 
     /*
      * Load tiger
@@ -85,17 +94,17 @@ class Main {
 
     if (this.manager.cow.actions){
       if (running){
-        if (this.manager.cow.actions[ACTION_WALK]) {
-          this.manager.cow.actions[ACTION_WALK].crossFadeFrom(this.manager.cow.actions[ACTION_RUN], 0.1, true);
-          this.manager.cow.actions[ACTION_RUN].stop();
-          this.manager.cow.actions[ACTION_WALK].play();
+        if (this.manager.cow.actions[ACTION_COW_WALK]) {
+          this.manager.cow.actions[ACTION_COW_WALK].crossFadeFrom(this.manager.cow.actions[ACTION_COW_RUN], 0.1, true);
+          this.manager.cow.actions[ACTION_COW_RUN].stop();
+          this.manager.cow.actions[ACTION_COW_WALK].play();
         }
         running = false;
       }else{
-        if (this.manager.cow.actions[ACTION_RUN]) {
-          this.manager.cow.actions[ACTION_RUN].crossFadeFrom(this.manager.cow.actions[ACTION_WALK], 0.1, true);
-          this.manager.cow.actions[ACTION_WALK].stop();
-          this.manager.cow.actions[ACTION_RUN].play();
+        if (this.manager.cow.actions[ACTION_COW_RUN]) {
+          this.manager.cow.actions[ACTION_COW_RUN].crossFadeFrom(this.manager.cow.actions[ACTION_COW_WALK], 0.1, true);
+          this.manager.cow.actions[ACTION_COW_WALK].stop();
+          this.manager.cow.actions[ACTION_COW_RUN].play();
         }
         running=true;
       }
