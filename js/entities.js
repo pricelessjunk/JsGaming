@@ -57,17 +57,17 @@ class Bot {
             if (this.path && (this.mesh.position.x != this.path.destination.x || this.mesh.position.z !=this.path.destination.z)){
                 this.state = "moving";
                 this.turnAndMoveToDestination();
-                this.connector = new LineConnector(this.mesh.position, this.path.destination);
-                scene.add(this.connector.line);
+                // his.connector = new LineConnector(this.mesh.position, this.path.destination);
+                // scene.add(this.connector.line);
             }
         }else if (this.state == "moving"){
             if (this.mesh.position.x == this.path.destination.x && this.mesh.position.z == this.path.destination.z){
                 this.state = "idle";
-                scene.remove(this.connector.line);
+                // scene.remove(this.connector.line);
                 this.path = undefined;
             }else if (this.path && this.mesh.position.x != this.path.destination.x || this.mesh.position.z !=this.path.destination.z){
                 this.turnAndMoveToDestination();
-                this.connector.updateSource(this.mesh.position);
+                // this.connector.updateSource(this.mesh.position);
             }
         }
     }
@@ -103,6 +103,7 @@ class Ground {
     }
 }
 
+/*
 class LineConnector{
     constructor(pt1, pt2) {
         const geometry = new Geometry();
@@ -119,6 +120,7 @@ class LineConnector{
         this.line.geometry.verticesNeedUpdate = true;
     }
 }
+*/
 
 class Tiger{
     constructor(scene, mixer) {
@@ -223,18 +225,18 @@ class Tiger{
                 this.state = "moving";
                 this.run(true);
                 this.turnAndMoveToDestination();
-                this.connector = new LineConnector(this.fbx.position, this.path.destination);
-                scene.add(this.connector.line);
+                // this.connector = new LineConnector(this.fbx.position, this.path.destination);
+                // scene.add(this.connector.line);
             }
         }else if (this.state == "moving"){
             if (this.fbx.position.x == this.path.destination.x && this.fbx.position.z == this.path.destination.z){
                 this.state = "idle";
                 this.run(false);
-                scene.remove(this.connector.line);
+                // scene.remove(this.connector.line);
                 this.path = undefined;
             }else if (this.path && this.fbx.position.x != this.path.destination.x || this.fbx.position.z !=this.path.destination.z){
                 this.turnAndMoveToDestination();
-                this.connector.updateSource(this.fbx.position);
+                //this.connector.updateSource(this.fbx.position);
             }
         }
     }

@@ -46,13 +46,7 @@ class Main {
     controls.maxPolarAngle = Math.PI / 4;
     controls.minPolarAngle = Math.PI / 4;
     controls.enableRotate = false;
-    
-    /*
-    * setup bot
-    */
-    /*this.manager.bot = new Bot();
-    this.manager.scene.add( this.manager.bot.mesh );
-    this.manager.objects.push(this.manager.bot);*/
+
 
     /*
      * setup ground
@@ -60,13 +54,6 @@ class Main {
     this.manager.ground = new Ground();
     this.manager.scene.add( this.manager.ground.mesh );
     this.manager.objects.push(this.manager.ground);
-
-    /*
-    * setup boundary
-    */
-    // this.manager.bot = new Bot();
-    // this.manager.scene.add( this.manager.bot.mesh );
-    // this.manager.objects.push(this.manager.bot);
 
 
     /*
@@ -118,8 +105,7 @@ class Main {
       if (intersects[0].object.uuid == this.manager.ground.mesh.uuid){
         if (this.manager.tiger.isSelected){
           console.log("Ground selected");
-          //this.manager.bot.deselect();
-          this.manager.tiger.deselect(this.manager.scene);
+          //this.manager.tiger.deselect(this.manager.scene);
 
           const xp = intersects[0].point.x.toFixed(2);
           const yp = intersects[0].point.y.toFixed(2);
@@ -132,14 +118,10 @@ class Main {
 
       if(intersects[0].object.uuid == this.manager.tiger.mesh.uuid){
         console.log('Tiger selected');
-        this.manager.tiger.select(this.manager.scene);
+        if (!this.manager.tiger.isSelected){
+          this.manager.tiger.select(this.manager.scene);
+        }
       }
-
-      /*if(intersects[0].object.uuid == this.manager.bot.mesh.uuid){
-        console.log("Bot selected");
-        this.manager.bot.select();
-      }*/
-
   }
 
   onWindowSizeChange() {
@@ -157,8 +139,6 @@ class Main {
   }
 
   fixUpModels(delta){
-    // this.manager.bot.processStates(this.manager.scene);
-
     if (this.manager.tiger && this.manager.tiger.mixer ){
       if (this.manager.tiger.mixer) {
         this.manager.tiger.mixer.update(delta);
