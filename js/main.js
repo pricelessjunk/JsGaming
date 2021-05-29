@@ -43,6 +43,9 @@ class Main {
      * setup controls
      */
     const controls = new OrbitControls(this.manager.camera, this.manager.renderer.domElement);
+    controls.maxPolarAngle = Math.PI / 4;
+    controls.minPolarAngle = Math.PI / 4;
+    controls.enableRotate = false;
     
     /*
     * setup bot
