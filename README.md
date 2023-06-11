@@ -4,4 +4,4 @@ Click on the tiger, then click somewhere on the ground. The tiger should move to
 
 # How to start
 
-Run the `server.py` and go to the address localhost:8000
+Run the `server.py` and go to the address [localhost:8000](localhost:8000)
